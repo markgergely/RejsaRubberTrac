@@ -1,6 +1,0 @@
-{
-    "arduino.logLevel": "verbose",
-    "arduino.additionalUrls": [
-        "https://www.adafruit.com/package_adafruit_index.json"
-    ]
-}

@@ -34,16 +34,11 @@ As stated above to get readings it’s important to not have any light leaking d
   
 <img src=images/mainhousing.jpg>  
   
-
   
 # Complete electronics/sensors/rechargeable battery housing
 
-Printable STL files:  
-- <a href=printables/Main%20Housing%20Base.stl>Main enclosure</a>
-- <a href=printables/Main%20Housing%20Lid.stl>Main enclosure Lid</a>  
-
-- <a href=printables/Main%20Holder%20Base.stl>Holder unit</a>  
-- <a href=printables/Main%20Holder%20Hinge.stl>Holder unit Hinge</a>  
+Printable STL files in the printables sub directory:  
+https://github.com/MagnusThome/RejsaRubberTrac/tree/master/3Dprint/printables  
 
 You also need this for the adjustable hinge:  
 - M3 x 6mm screw  
@@ -51,13 +46,21 @@ You also need this for the adjustable hinge:
 - 11mm washer  
 - a few short bits of transparant filament can be used in the holes above the three LEDs to make them visible on the front panel,
 
-<img src=images/main%20housing%20early%20wip%201.jpg>
-
 <img src=images/main%20housing%20early%20wip%202.jpg>
 
 <img src=images/main%20housing%20lids.jpg>  
   
+## Protection windows:   
   
+<img src=images/Windows%20and%20LED-filaments.jpg>
+  
+
+Rubber hat over power switch:  
+  
+<img src=images/switch%20rubber%20hat%20(cut%20down).jpg>  <img src=images/switch%20rubber%20hat%20(pull%20through).jpg>  
+  
+
+
 # Separate sensor enclosure
 
 The mounting rings have three threaded plus three un-threaded holes. You need three M4 screws but normally you do not need any nuts. 
@@ -72,8 +75,17 @@ Printable STL files:
 You can stack multiple mounting rings on top of each other with longer screws to get the sensor mounted further behind or further above whatever you are mounting it on.  
 
 <img src="images/minisensor.jpg">
+  
+  
+# Carrying case  
+  
+To prevent accidentally turning on a sensor and unnecessarily depleting the battery you can print this little box to store two sensors in.
 
-
+- <a href=printables/Carrying%20Case.stl>Carrying Case</a>  
+  
+<img src="images/carryingcase.jpg">  
+    
+  
 # Downloadable files for printing or edtiting
 
 Look in the download folder for more examples, housings, snap-in holders and more. There are both STL files for printing and STEP files for edtiting before printing your own versions.  

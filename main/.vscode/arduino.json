@@ -1,5 +1,0 @@
-{
-    "board": "arduino:avr:nano",
-    "sketch": "main.ino",
-    "configuration": "cpu=atmega328"
-}
