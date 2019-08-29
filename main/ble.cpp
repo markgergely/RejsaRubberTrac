@@ -1,5 +1,4 @@
 #include "ble.h"
-#include "adc_vbat.h"
 
 BLEService  mainService   = BLEService        (0x00000001000000fd8933990d6f411ff7);
 BLECharacteristic GATTone = BLECharacteristic (0x01);
