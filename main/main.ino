@@ -55,7 +55,7 @@ void setup(){
   distSensor.initialise();
 
   Serial.println("Starting temperature sensor");
-  tempSensor.initialise(4);
+  tempSensor.initialise(FIS_REFRESHRATE);
 
   // SET SOME DEFAULT VALUES IN THE DATA PACKETS
   datapackOne.distance = 0;

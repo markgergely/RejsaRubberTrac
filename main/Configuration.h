@@ -28,6 +28,7 @@
 #define TEMPOFFSET         0     // Default = 0      NOTE: in TENTHS of degrees Celsius --> TEMPOFFSET 10 --> 1 degree
 
 #define FIS_SENSOR         FIS_MLX90640  // Device to use, see Constants.h                        
+#define FIS_REFRESHRATE    4     // Sets the FIS refresh rate in Hz, MLX90640 should be 4 with nRF52, MLX90621 works at 16Hz
 
 #define IGNORE_TOP_ROWS    0     // Ignore this many rows from the top of the sensor
 #define IGNORE_BOTTOM_ROWS 0     // Ignore this many rows from the bottom of the sensor
