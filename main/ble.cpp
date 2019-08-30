@@ -16,8 +16,7 @@ void setupBluefruit(char bleName[]) {
   Serial.println();
   Serial.printf("Device name: %s\n", bleName);
   Bluefruit.setName(bleName);
-  Bluefruit.getName(bleName,32);
-  Serial.printf("Device name: %s\n", bleName);
+
   setupMainService();
   startAdvertising(); 
 }
