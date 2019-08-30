@@ -3,10 +3,13 @@
 #include "Configuration.h"
 #include "algo.h"
 
-void DistSensor::initialise() {
+DistSensor::DistSensor() {
   distance = 0;
+  sensor = Adafruit_VL53L0X();
+}
+
+void DistSensor::initialise() {
   pinMode(GPIODISTSENSORXSHUT, OUTPUT);
-  distance_sensor = Adafruit_VL53L0X();
   digitalWrite(GPIODISTSENSORXSHUT, LOW);
   delay(200);
   digitalWrite(GPIODISTSENSORXSHUT, HIGH);
