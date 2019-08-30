@@ -2,37 +2,27 @@
 #include "dist_sensor.h"
 #include "Configuration.h"
 #include "algo.h"
-
-DistSensor::DistSensor() {
-  distance = 0;
-  sensor = Adafruit_VL53L0X();
-}
+#include <Wire.h>
 
 void DistSensor::initialise() {
+  distance = 0;
+  Wire.begin();
   pinMode(GPIODISTSENSORXSHUT, OUTPUT);
   digitalWrite(GPIODISTSENSORXSHUT, LOW);
-  delay(200);
+  delay(10);
   digitalWrite(GPIODISTSENSORXSHUT, HIGH);
-  delay(200);
-  present = sensor.begin(VL53L0X_I2C_ADDR);
+  delay(10);
+  present = sensor.init();
+  sensor.setTimeout(500);
+  sensor.startContinuous();
 };
 
 void DistSensor::measure() {
   if (present) {
-    VL53L0X_RangingMeasurementData_t measure;
-    if (sensor.rangingTest(&measure, false) != VL53L0X_ERROR_NONE) {
-      distance = 0;                                        // SENSOR FAIL
-      debug("Reset distance sensor");
-      initialise();
+    int16_t rawDistance = sensor.readRangeContinuousMillimeters();
+    if (rawDistance < 500) {
+       distance = distanceFilter(rawDistance) - DISTANCEOFFSET; // Only update distance if its less than 500mm
     }
-    else {
-      int16_t rawDistance = measure.RangeMilliMeter;
-      if (measure.RangeStatus == 4 || rawDistance > 8190) {   // MEASURE FAIL
-        distance = 0;
-      }
-      else {
-        distance = distanceFilter(rawDistance) - DISTANCEOFFSET;
-      }
-    }
+    if (sensor.timeoutOccurred()) { Serial.println("Distance sensor TIMEOUT!"); }
   }
 }

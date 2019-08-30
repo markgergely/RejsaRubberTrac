@@ -1,23 +1,21 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <Tasker.h>
 #include "Configuration.h"
 #include "temp_sensor.h"
 #include "dist_sensor.h"
 #include "ble.h"
 #include "algo.h"
-
-one_t datapackOne;
-two_t datapackTwo;
-thr_t datapackThr;
-
-char bleName[32];
-uint8_t mirrorTire = 0;
-
+  
 TempSensor tempSensor;
 DistSensor distSensor;
+BLEDevice bleDevice;
+Tasker tasker;
+
+uint8_t mirrorTire = 0;
 int vBattery = 0;
 int lipoPercentage = 0;
-unsigned long previousBatteryUpdate = 0;
+int measurementCycles = 0; // Counts how many measurement cycles were completed. printStatus() uses it to roughly calculate refresh rate.
 
 // Function declarations
 uint8_t getWheelPosCoding(void);
@@ -25,7 +23,7 @@ void printStatus(void);
 void blinkOnTempChange(int16_t);
 void blinkOnDistChange(uint16_t);
 int getVbat(void);
-
+void updateBattery(void);
 
 #ifdef DUMMYDATA
   #include "dummydata.h"
@@ -35,6 +33,7 @@ int getVbat(void);
 // ----------------------------------------
 
 void setup(){
+  static char bleName[32] = "RejsaRubber";
   Serial.begin(115200);
   while (!Serial); // Wait for Serial
   Serial.println("\nBegin startup");
@@ -44,6 +43,7 @@ void setup(){
   pinMode(GPIOFRONT, INPUT_PULLUP);
   pinMode(GPIOCAR, INPUT_PULLUP);
   pinMode(GPIOMIRR, INPUT_PULLUP);
+  updateBattery();
 
   // TIRE MIRRORED?
   if ((MIRRORTIRE == 1 || digitalRead(GPIOMIRR) == 0)) {
@@ -51,25 +51,22 @@ void setup(){
     Serial.println("Temperature sensor orientation is mirrored");
   }
 
+  // Figure out wheel position coding.
+  uint8_t wheelPosCode = getWheelPosCoding();
+  if (wheelPosCode >= 7) wheelPosCode = WHEELPOS; // set from configuration
+
+  // Set up periodic functions
+  tasker.setInterval(printStatus, SERIAL_UPDATERATE*1000); // Print status every second
+  tasker.setInterval(updateBattery, BATTERY_UPDATERATE*1000); // Update battery status every minute
+
   Serial.println("Starting distance sensor");
   distSensor.initialise();
 
   Serial.println("Starting temperature sensor");
   tempSensor.initialise(FIS_REFRESHRATE);
 
-  // SET SOME DEFAULT VALUES IN THE DATA PACKETS
-  datapackOne.distance = 0;
-  datapackOne.protocol = PROTOCOL;
-  datapackTwo.protocol = PROTOCOL;
-  datapackThr.distance = 0;
-  datapackThr.protocol = PROTOCOL;
-
-  // START UP BLUETOOTH
-  uint8_t wheelPosCode = getWheelPosCoding();
-  if (wheelPosCode >= 7) wheelPosCode = WHEELPOS; // set from configuration
-  parseBLEname(wheelPosCode, bleName);  // Pre-fill the correct bleName for the wheel position
-
-  setupBluefruit(bleName);
+  Serial.println("Starting BLE device");
+  bleDevice.setupDevice(bleName, wheelPosCode);
   
   Serial.println("Running!");
 }
@@ -78,40 +75,25 @@ void loop() {
   distSensor.measure();
   tempSensor.measure();
   if (Bluefruit.connected()) {
-    renderPacketTemperature(tempSensor.measurement_16, mirrorTire, datapackOne, datapackTwo, datapackThr);
-    renderPacketBattery(vBattery, lipoPercentage, datapackTwo);
-    datapackOne.distance = datapackThr.distance = distSensor.distance;
-    sendPackets(datapackOne, datapackTwo, datapackThr);
+    bleDevice.transmit(tempSensor.measurement_16, mirrorTire, distSensor.distance, vBattery, lipoPercentage);
   }
-
   blinkOnTempChange(tempSensor.measurement_16[8]/20);    // Use one single temp in the middle of the array
   blinkOnDistChange(distSensor.distance/20);    // value/nn -> Ignore smaller changes to prevent noise triggering blinks
-  long now = millis();
-  if ((now-previousBatteryUpdate) > 60000) {
-    vBattery = 0;
-    previousBatteryUpdate = now;
-  }
-  if (!vBattery) {
-    vBattery = getVbat();
-    lipoPercentage = lipoPercent(vBattery);
-  }
-
-  printStatus();
+  measurementCycles++;
+  tasker.loop();
 }
 
 uint8_t getWheelPosCoding(void) {
   return digitalRead(GPIOLEFT) + (digitalRead(GPIOFRONT) << 1) + (digitalRead(GPIOCAR) << 2);
 } 
 
-void printStatus(void) {
-  static unsigned long then;
-  unsigned long now = millis();
-  debug("Rate: %.1fHz\tV: %dmV (%d%%)\tD: %dmm\tT: ",(float)1000/(now-then), vBattery, lipoPercentage, distSensor.distance);
+void printStatus(void) { 
+  debug("Rate: %.1fHz\tV: %dmV (%d%%)\tD: %dmm\tT: ", (float)measurementCycles/SERIAL_UPDATERATE, vBattery, lipoPercentage, distSensor.distance);
   for (uint8_t i=0; i<FIS_X; i++) {
-    debug("%.1f\t",(float)tempSensor.measurement_16[i]/10);
+    debug("%.1f\t",(float)tempSensor.measurement[i]/10);
   }
   debug("\n");
-  then = now;
+  measurementCycles = 0;
 }
 
 void blinkOnDistChange(uint16_t distnew) {
@@ -140,6 +122,11 @@ void blinkOnTempChange(int16_t tempnew) {
   tempold = tempnew;
 }
 
-int getVbat() {
+int getVbat(void) {
   return analogRead(VBAT_PIN) * MILLIVOLTFULLSCALE * BATRESISTORCOMP / STEPSFULLSCALE;
+}
+
+void updateBattery(void) {
+  vBattery = getVbat();
+  lipoPercentage = lipoPercent(vBattery);
 }

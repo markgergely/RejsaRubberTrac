@@ -1,5 +1,5 @@
 #include "Constants.h"
-#define WHEELPOS 1        // DEFAULT is 7
+#define WHEELPOS 0        // DEFAULT is 7
                           // 7 = "RejsaRubber" + four last bytes from the bluetooth MAC address
 
                           // 0 = "RejsaRubberFL" + three last bytes from the bluetooth MAC address
@@ -19,8 +19,8 @@
                           
 
 
-#define DISTANCEOFFSET 0  // Write distance to tire in mm here to get logged distance data value centered around zero
-                          // If you leave this value here at 0 the distance value in the logs will always be positive numbers
+#define DISTANCEOFFSET 0         // Write distance to tire in mm here to get logged distance data value centered around zero
+                                 // If you leave this value here at 0 the distance value in the logs will always be positive numbers
 
 // -- Far Infrared Sensor related settings
 
@@ -30,24 +30,25 @@
 #define FIS_SENSOR         FIS_MLX90640  // Device to use, see Constants.h                        
 #define FIS_REFRESHRATE    4     // Sets the FIS refresh rate in Hz, MLX90640 should be 4 with nRF52, MLX90621 works at 16Hz
 
-#define IGNORE_TOP_ROWS    0     // Ignore this many rows from the top of the sensor
-#define IGNORE_BOTTOM_ROWS 0     // Ignore this many rows from the bottom of the sensor
+#define IGNORE_TOP_ROWS    1     // Ignore this many rows from the top of the sensor
+#define IGNORE_BOTTOM_ROWS 1     // Ignore this many rows from the bottom of the sensor
 
-#define COLUMN_AGGREGATE COLUMN_AGGREGATE_MAX // Set column aggregation algorhytm, see Constants.h
+#define COLUMN_AGGREGATE   COLUMN_AGGREGATE_MAX // Set column aggregation algorhytm, see Constants.h
 
-#define DEBUG // Set debug mode, results with more verbose output on the serial port
+#define SERIAL_UPDATERATE  1
+#define DEBUG                    // Set debug mode, results in more verbose output on serial port
 
 // -- Dynamically calculated configuration values
 
 #if FIS_SENSOR == FIS_MLX90621
-  #define FIS_X             16  // Far Infrared Sensor columns
-  #define FIS_Y              4  // Far Infrared Sensor rows
+  #define FIS_X           16  // Far Infrared Sensor columns
+  #define FIS_Y            4  // Far Infrared Sensor rows
 #elif FIS_SENSOR == FIS_MLX90640
-  #define FIS_X             32
-  #define FIS_Y             24
+  #define FIS_X           32
+  #define FIS_Y           24
 #elif FIS_SENSOR == FIS_DUMMY
-  #define FIS_X             16
-  #define FIS_X              4
+  #define FIS_X           16
+  #define FIS_X            4
 #endif
 
 #define EFFECTIVE_ROWS ( FIS_Y - IGNORE_TOP_ROWS - IGNORE_BOTTOM_ROWS )

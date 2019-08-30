@@ -2,6 +2,7 @@
 #include "Configuration.h"
 #include "algo.h"
 #include <Arduino.h>
+#include "spline.h"
 
 void TempSensor::initialise(int refrate) {
     FISDevice.initialise(refrate);
@@ -16,11 +17,7 @@ void TempSensor::measure() {
     }
     measurement[x]=calculateColumnTemperature(column_content, EFFECTIVE_ROWS);
   }
-#if FIS_SENSOR == FIS_MLX90621
-  measurement_16 = measurement;
-#elif FIS_SENSOR == FIS_MLX90640
-  for (uint8_t i=0;i<16;i++) measurement_16[i] = max(measurement[i*2], measurement[i*2+1]); // Transform the 32 measurements to 16
-#endif
+  extrapolate(0, FIS_X, measurement_16);
 }
 
 float TempSensor::getPixelTemperature(uint8_t x, uint8_t y) {
@@ -37,4 +34,12 @@ float TempSensor::calculateColumnTemperature(uint16_t column_content[], uint8_t 
 #elif COLUMN_AGGREGATE == COLUMN_AGGREGATE_AVG
   return get_average(column_content, size);
 #endif
+}
+
+void TempSensor::extrapolate(uint8_t startColumn, uint8_t endColumn,int16_t result[]) {
+  float stepSize = (endColumn-startColumn)/16.0;
+  float x[32];
+  for (uint8_t i=0;i<FIS_X;i++) x[i]=i; // Initialize the X axis of an array {0, 1, 2 ... 30, 31}
+  Spline linearSpline(x,measurement,FIS_X,1);
+  for (uint8_t i=0;i<16;i++) result[i] = linearSpline.value(i*stepSize);
 }

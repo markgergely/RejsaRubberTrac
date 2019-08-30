@@ -1,12 +1,20 @@
 #include "ble.h"
 
-BLEService  mainService   = BLEService        (0x00000001000000fd8933990d6f411ff7);
-BLECharacteristic GATTone = BLECharacteristic (0x01);
-BLECharacteristic GATTtwo = BLECharacteristic (0x02);
-BLECharacteristic GATTthr = BLECharacteristic (0x03);
+BLEDevice::BLEDevice() { // We initialize a couple things in constructor
+  datapackOne.distance = 0;
+  datapackOne.protocol = PROTOCOL;
+  datapackTwo.protocol = PROTOCOL;
+  datapackThr.distance = 0;
+  datapackThr.protocol = PROTOCOL;
+  mainService = BLEService(0x00000001000000fd8933990d6f411ff7);
+  GATTone = BLECharacteristic(0x01);
+  GATTtwo = BLECharacteristic(0x02);
+  GATTthr = BLECharacteristic(0x03);
+}
 
-void setupBluefruit(char bleName[]) {
+void BLEDevice::setupDevice(char bleName[], uint8_t wheelPosCode) {
   uint8_t macaddr[6];
+  parseBLEname(wheelPosCode, bleName);
   Bluefruit.autoConnLed(false); // DISABLE BLUE BLINK ON CONNECT STATUS
   Bluefruit.begin(); 
   Bluefruit.getAddr(macaddr);
@@ -16,13 +24,12 @@ void setupBluefruit(char bleName[]) {
   Serial.println();
   Serial.printf("Device name: %s\n", bleName);
   Bluefruit.setName(bleName);
-  Bluefruit.getName(bleName,32);
-  Serial.printf("Device name: %s\n", bleName);
+
   setupMainService();
   startAdvertising(); 
 }
 
-void setupMainService(void) {
+void BLEDevice::setupMainService(void) {
   mainService.begin();
 
   GATTone.setProperties(CHR_PROPS_NOTIFY | CHR_PROPS_READ);  // Options: CHR_PROPS_BROADCAST, CHR_PROPS_NOTIFY, CHR_PROPS_INDICATE, CHR_PROPS_READ, CHR_PROPS_WRITE_WO_RESP, CHR_PROPS_WRITE
@@ -42,7 +49,7 @@ void setupMainService(void) {
 }
 
 
-void startAdvertising(void) {
+void BLEDevice::startAdvertising(void) {
   
   Bluefruit.setTxPower(4);
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
@@ -55,7 +62,7 @@ void startAdvertising(void) {
   Bluefruit.Advertising.start(0); 
 }
 
-void parseBLEname(uint8_t wheelPos, char *blename) {
+void BLEDevice::parseBLEname(uint8_t wheelPos, char *blename) {
   switch (wheelPos) {
     case 0: sprintf(blename, "RejsaRubberFL"); break;
     case 1: sprintf(blename, "RejsaRubberFR"); break;
@@ -69,7 +76,7 @@ void parseBLEname(uint8_t wheelPos, char *blename) {
   }
 }
 
-void renderPacketTemperature(int16_t measurements[], uint8_t mirrorTire, one_t &FirstPacket, two_t &SecondPacket, thr_t &ThirdPacket) {
+void BLEDevice::renderPacketTemperature(int16_t measurements[], uint8_t mirrorTire, one_t &FirstPacket, two_t &SecondPacket, thr_t &ThirdPacket) {
   for(uint8_t x=0;x<8;x++){
     uint8_t _x = x;
     if (mirrorTire == 1) {
@@ -81,13 +88,16 @@ void renderPacketTemperature(int16_t measurements[], uint8_t mirrorTire, one_t &
   }
 }
 
-void renderPacketBattery(int vbattery, int percentage, two_t &SecondPacket) {
+void BLEDevice::renderPacketBattery(int vbattery, int percentage, two_t &SecondPacket) {
   SecondPacket.voltage = vbattery;
   SecondPacket.charge = percentage;
 }
 
-void sendPackets(one_t &FirstPacket, two_t &SecondPacket, thr_t &ThirdPacket) {
-  GATTone.notify(&FirstPacket, sizeof(FirstPacket));
-  GATTtwo.notify(&SecondPacket, sizeof(SecondPacket));
-  GATTthr.notify(&ThirdPacket, sizeof(ThirdPacket));
+void BLEDevice::transmit(int16_t tempMeasurements[], uint8_t mirrorTire, int16_t distance, int vBattery, int lipoPercentage) {
+  renderPacketTemperature(tempMeasurements, mirrorTire, datapackOne, datapackTwo, datapackThr);
+  renderPacketBattery(vBattery, lipoPercentage, datapackTwo);
+  datapackOne.distance = datapackThr.distance = distance;
+  GATTone.notify(&datapackOne, sizeof(datapackOne));
+  GATTtwo.notify(&datapackTwo, sizeof(datapackTwo));
+  GATTthr.notify(&datapackThr, sizeof(datapackThr));
 }

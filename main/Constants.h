@@ -18,8 +18,9 @@
 #define VBAT_PIN A7
 
 #define MILLIVOLTFULLSCALE 3600
-#define STEPSFULLSCALE 1024
-#define BATRESISTORCOMP 1.403   // Compensation for a resistor voltage divider between battery and ADC input pin
+#define STEPSFULLSCALE     1024
+#define BATRESISTORCOMP       1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
+#define BATTERY_UPDATERATE   60     // Update rate for the battery
 
 #ifdef DEBUG
   #define debug(fmt, ...) { Serial.printf(fmt,## __VA_ARGS__); }
