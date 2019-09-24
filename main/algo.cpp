@@ -9,6 +9,14 @@ uint16_t get_maximum(uint16_t arr[], int size) {
   return max_value;
 }
 
+uint16_t get_minimum(uint16_t arr[], int size) {
+  uint16_t min_value = arr[0];
+  for (uint8_t i=0; i < size; i++) {
+    if (arr[i] < min_value) min_value = arr[i];
+  }
+  return min_value;
+}
+
 uint16_t get_average(uint16_t arr[], int size) {
   uint16_t sum_value = 0;
   for (uint16_t i=0; i < size; i++) sum_value += arr[i];
@@ -16,7 +24,7 @@ uint16_t get_average(uint16_t arr[], int size) {
 }
 
 int16_t distanceFilter(int16_t distanceIn) {
-  const uint8_t filterSz = 2;
+  const uint8_t filterSz = 8;
   static int16_t filterArr[filterSz];
   int16_t distanceOut = 0;
   for (int8_t i=0; i<(filterSz-1); i++) {

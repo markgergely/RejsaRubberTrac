@@ -1,14 +1,30 @@
-#include <bluefruit.h>
+#include "Configuration.h"
+#if BOARD == BOARD_NRF52
+  #include <bluefruit.h>
+#elif BOARD == BOARD_ESP32
+  #include <BLEDevice.h>
+  #include <BLEServer.h>
+  #include <BLEUtils.h>
+  #include <BLE2902.h>
+#endif
 #include <Arduino.h>
 #include "protocol.h"
-#include "Configuration.h"
 
-class BLEDevice {
+class BLDevice {
 private:
-  BLEService        mainService;
-  BLECharacteristic GATTone;
-  BLECharacteristic GATTtwo;
-  BLECharacteristic GATTthr;
+#if BOARD == BOARD_NRF52
+  BLEService         mainService;
+  BLECharacteristic  GATTone;
+  BLECharacteristic  GATTtwo;
+  BLECharacteristic  GATTthr;
+#elif BOARD == BOARD_ESP32
+  BLEService*        mainService;
+  BLEServer*         mainServer;
+  BLEAdvertising*    mainAdvertising;
+  BLECharacteristic* GATTone;
+  BLECharacteristic* GATTtwo;
+  BLECharacteristic* GATTthr;
+#endif
   one_t             datapackOne;
   two_t             datapackTwo;
   thr_t             datapackThr;
@@ -19,7 +35,8 @@ private:
   void sendPackets(one_t &FirstPacket, two_t &SecondPacket, thr_t &ThirdPacket);
   void parseBLEname(uint8_t wheelPos, char *blename);
 public:
+  boolean isConnected();
   void setupDevice(char bleName[], uint8_t wheelPosCode);
   void transmit(int16_t tempMeasurements[], uint8_t mirrorTire, int16_t distance, int vBattery, int lipoPercentage);
-  BLEDevice();
+  BLDevice();
 };

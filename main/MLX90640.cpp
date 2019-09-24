@@ -32,7 +32,7 @@ void MLX90640::initialise(int refrate) {
   if (status != 0) Serial.println("Parameter extraction failed");
   MLX90640_SetRefreshRate(MLX90640_address, Hz);
 
-  MLX90640_I2CFreqSet(1000); //Changing gears, ensure that I2C clock speed set to 1MHz
+  MLX90640_I2CFreqSet(800); //Changing gears, ensure that I2C clock speed set to 1MHz
   Serial.println("MLX90640 initialised correctly.");
 }
 
@@ -45,8 +45,9 @@ boolean MLX90640::isConnected() {
 
 void MLX90640::measure(bool) {
   uint16_t mlx90640Frame[834];
-  int status = MLX90640_GetFrameData(MLX90640_address, mlx90640Frame);
-  if (status < 0) Serial.printf("GetFrame Error: %s\n");
+  MLX90640_I2CFreqSet(800); //Changing gears, ensure that I2C clock speed set to 1MHz
+  int _stat = MLX90640_GetFrameData(MLX90640_address, mlx90640Frame);
+  if (_stat < 0) Serial.printf("GetFrame Error: %d\n", _stat);
   //Vdd = MLX90640_GetVdd(mlx90640Frame, &mlx90640);
   //int subpage = MLX90640_GetSubPageNumber(mlx90640Frame);
   Tambient = MLX90640_GetTa(mlx90640Frame, &mlx90640);

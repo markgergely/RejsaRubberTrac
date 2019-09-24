@@ -1,7 +1,19 @@
-// Distance Sensor identifiers
+// FIS identifiers
 #define FIS_MLX90621 0
 #define FIS_MLX90640 1
 #define FIS_DUMMY    2
+
+// Distance sensor identifiers
+#define DIST_VL53L0X 0
+#define DIST_NONE    1
+
+// Display device
+#define DISP_128X32 0
+#define DISP_NONE   1
+
+// Boards
+#define BOARD_NRF52 0
+#define BOARD_ESP32 1
 
 // Column aggregation algo identifiers
 #define COLUMN_AGGREGATE_MAX 0
@@ -15,14 +27,8 @@
 #define GPIOMIRR   14           // GPIO pin number
 
 // Voltage Measurement related items
-#define VBAT_PIN A7
 
-#define MILLIVOLTFULLSCALE 3600
-#define STEPSFULLSCALE     1024
-#define BATRESISTORCOMP       1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
-#define BATTERY_UPDATERATE   60     // Update rate for the battery
-
-#ifdef DEBUG
+#ifdef _DEBUG
   #define debug(fmt, ...) { Serial.printf(fmt,## __VA_ARGS__); }
 #else
   #define debug(fmt, ...) {} // Silence is golden

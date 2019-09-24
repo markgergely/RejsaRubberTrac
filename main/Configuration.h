@@ -28,15 +28,25 @@
 #define TEMPOFFSET         0     // Default = 0      NOTE: in TENTHS of degrees Celsius --> TEMPOFFSET 10 --> 1 degree
 
 #define FIS_SENSOR         FIS_MLX90640  // Device to use, see Constants.h                        
-#define FIS_REFRESHRATE    4     // Sets the FIS refresh rate in Hz, MLX90640 should be 4 with nRF52, MLX90621 works at 16Hz
+#define FIS_REFRESHRATE    16      // Sets the FIS refresh rate in Hz, MLX90640 should be 4 with nRF52, MLX90621 works at 16Hz
 
-#define IGNORE_TOP_ROWS    1     // Ignore this many rows from the top of the sensor
-#define IGNORE_BOTTOM_ROWS 1     // Ignore this many rows from the bottom of the sensor
+#define IGNORE_TOP_ROWS    10     // Ignore this many rows from the top of the sensor
+#define IGNORE_BOTTOM_ROWS 10     // Ignore this many rows from the bottom of the sensor
 
 #define COLUMN_AGGREGATE   COLUMN_AGGREGATE_MAX // Set column aggregation algorhytm, see Constants.h
 
+#define AUTORANGING_MINIMUM_TIRE_WIDTH 16 // Minimum tire width for autoranging
+
 #define SERIAL_UPDATERATE  1
-#define DEBUG                    // Set debug mode, results in more verbose output on serial port
+#define _DEBUG                    // Set debug mode, results in more verbose output on serial port
+#define FIS_AUTORANGING          // Comment to disable autoranging
+
+// -- Other devices
+#define DIST_SENSOR        DIST_VL53L0X
+#define DISP_DEVICE        DISP_128X32
+#define BOARD              BOARD_ESP32
+
+#define BATTERY_UPDATERATE   1     // Update rate for the battery in seconds
 
 // -- Dynamically calculated configuration values
 
@@ -52,3 +62,15 @@
 #endif
 
 #define EFFECTIVE_ROWS ( FIS_Y - IGNORE_TOP_ROWS - IGNORE_BOTTOM_ROWS )
+
+#if BOARD == BOARD_ESP32
+  #define VBAT_PIN             A13
+  #define MILLIVOLTFULLSCALE  3300
+  #define STEPSFULLSCALE      4096
+  #define BATRESISTORCOMP    2.100 // Compensation for a resistor voltage divider between battery and ADC input pin
+#elif BOARD == BOARD_NRF52
+  #define VBAT_PIN              A7
+  #define MILLIVOLTFULLSCALE  3600
+  #define STEPSFULLSCALE      1024
+  #define BATRESISTORCOMP    1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
+#endif
