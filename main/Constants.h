@@ -19,13 +19,6 @@
 #define COLUMN_AGGREGATE_MAX 0
 #define COLUMN_AGGREGATE_AVG 1
 
-// PIN Assignments 
-#define GPIODISTSENSORXSHUT 12  // GPIO pin number
-#define GPIOCAR    28           // GPIO pin number
-#define GPIOFRONT  29           // GPIO pin number
-#define GPIOLEFT   13           // GPIO pin number
-#define GPIOMIRR   14           // GPIO pin number
-
 // Voltage Measurement related items
 
 #ifdef _DEBUG
