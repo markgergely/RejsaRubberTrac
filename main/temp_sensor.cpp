@@ -2,14 +2,16 @@
 #include "Configuration.h"
 #include "algo.h"
 #include <Arduino.h>
+#include <Wire.h>
 #include "spline.h"
 
-void TempSensor::initialise(int refrate) {
+void TempSensor::initialise(int refrate, TwoWire *I2Cpipe) {
   rawMinSlopePosition= FIS_X;
   rawMaxSlopePosition= 0;
   leftEdgePosition = 0.0;
   rightEdgePosition = (float)FIS_X;
-  FISDevice.initialise(refrate);
+  thisWire = I2Cpipe;
+  FISDevice.initialise(refrate, thisWire);
 };
 
 void TempSensor::measure() {

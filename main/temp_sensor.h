@@ -2,6 +2,7 @@
 #include "MLX90640.h"
 #include "Configuration.h"
 #include <Arduino.h>
+#include <Wire.h>
 
 class TempSensor {
 private:
@@ -16,6 +17,7 @@ private:
 #elif FIS_SENSOR == FIS_MLX90640
   MLX90640 FISDevice;
 #endif
+  TwoWire *thisWire;
 public:
   float measurement[FIS_X];
   float measurement_slope[FIS_X];
@@ -25,6 +27,6 @@ public:
   uint8_t rawMaxSlopePosition;
   float leftEdgePosition;
   float rightEdgePosition;
-	void initialise(int);
+	void initialise(int refrate, TwoWire *I2Cpipe = &Wire);
 	void measure();
 };
