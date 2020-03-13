@@ -12,8 +12,12 @@ void DistSensor::initialise() {
   delay(10);
   digitalWrite(GPIODISTSENSORXSHUT, HIGH);
   delay(10);
+  uint32_t temporary;
   present = sensor.init();
   sensor.setTimeout(500);
+  sensor.setMeasurementTimingBudget(50000);
+  temporary = sensor.getMeasurementTimingBudget();
+  Serial.printf("wtf: %dmm\n", temporary);
   sensor.startContinuous();
 };
 

@@ -1,26 +1,26 @@
 #include "Constants.h"
-#define WHEELPOS 0        // DEFAULT is 7
-                          // 7 = "RejsaRubber" + four last bytes from the bluetooth MAC address
+#define WHEELPOS 1        // DEFAULT is 7
+// 7 = "RejsaRubber" + four last bytes from the bluetooth MAC address
 
-                          // 0 = "RejsaRubberFL" + three last bytes from the bluetooth MAC address
-                          // 1 = "RejsaRubberFR" + three last bytes from the bluetooth MAC address
-                          // 2 = "RejsaRubberRL" + three last bytes from the bluetooth MAC address
-                          // 3 = "RejsaRubberRR" + three last bytes from the bluetooth MAC address
-                          // 5 = "RejsaRubberF" + one space + three last bytes from the bluetooth MAC address
-                          // 6 = "RejsaRubberR" + one space + three last bytes from the bluetooth MAC address
-                        
-                          // NOTE!!! THIS CAN BE OVERRIDDEN WITH HARDWARE CODING WITH GPIO PINS
+// 0 = "RejsaRubberFL" + three last bytes from the bluetooth MAC address
+// 1 = "RejsaRubberFR" + three last bytes from the bluetooth MAC address
+// 2 = "RejsaRubberRL" + three last bytes from the bluetooth MAC address
+// 3 = "RejsaRubberRR" + three last bytes from the bluetooth MAC address
+// 5 = "RejsaRubberF" + one space + three last bytes from the bluetooth MAC address
+// 6 = "RejsaRubberR" + one space + three last bytes from the bluetooth MAC address
 
-                    
-#define MIRRORTIRE 0      // 0 = default
-                          // 1 = Mirror the tire, making the outside edge temps the inside edge temps
+// NOTE!!! THIS CAN BE OVERRIDDEN WITH HARDWARE CODING WITH GPIO PINS
 
-                          // NOTE!!! THIS CAN BE OVERRIDDEN WITH HARDWARE CODING WITH A GPIO PIN
-                          
+
+#define MIRRORTIRE 1      // 0 = default
+// 1 = Mirror the tire, making the outside edge temps the inside edge temps
+
+// NOTE!!! THIS CAN BE OVERRIDDEN WITH HARDWARE CODING WITH A GPIO PIN
+
 
 
 #define DISTANCEOFFSET 0         // Write distance to tire in mm here to get logged distance data value centered around zero
-                                 // If you leave this value here at 0 the distance value in the logs will always be positive numbers
+// If you leave this value here at 0 the distance value in the logs will always be positive numbers
 
 // -- Far Infrared Sensor related settings
 
@@ -39,7 +39,7 @@
 
 #define SERIAL_UPDATERATE  1
 #define _DEBUG                    // Set debug mode, results in more verbose output on serial port
-#define FIS_AUTORANGING          // Comment to disable autoranging
+//#define FIS_AUTORANGING          // Comment to disable autoranging
 
 // -- Other devices
 #define DIST_SENSOR        DIST_VL53L0X
@@ -51,26 +51,26 @@
 // -- Dynamically calculated configuration values
 
 #if FIS_SENSOR == FIS_MLX90621
-  #define FIS_X           16  // Far Infrared Sensor columns
-  #define FIS_Y            4  // Far Infrared Sensor rows
+#define FIS_X           16  // Far Infrared Sensor columns
+#define FIS_Y            4  // Far Infrared Sensor rows
 #elif FIS_SENSOR == FIS_MLX90640
-  #define FIS_X           32
-  #define FIS_Y           24
+#define FIS_X           32
+#define FIS_Y           24
 #elif FIS_SENSOR == FIS_DUMMY
-  #define FIS_X           16
-  #define FIS_X            4
+#define FIS_X           16
+#define FIS_X            4
 #endif
 
 #define EFFECTIVE_ROWS ( FIS_Y - IGNORE_TOP_ROWS - IGNORE_BOTTOM_ROWS )
 
 #if BOARD == BOARD_ESP32
-  #define VBAT_PIN             A13
-  #define MILLIVOLTFULLSCALE  3300
-  #define STEPSFULLSCALE      4096
-  #define BATRESISTORCOMP    2.100 // Compensation for a resistor voltage divider between battery and ADC input pin
+#define VBAT_PIN             A13
+#define MILLIVOLTFULLSCALE  3300
+#define STEPSFULLSCALE      4096
+#define BATRESISTORCOMP    2.000 // Compensation for a resistor voltage divider between battery and ADC input pin
 #elif BOARD == BOARD_NRF52
-  #define VBAT_PIN              A7
-  #define MILLIVOLTFULLSCALE  3600
-  #define STEPSFULLSCALE      1024
-  #define BATRESISTORCOMP    1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
+#define VBAT_PIN              A7
+#define MILLIVOLTFULLSCALE  3600
+#define STEPSFULLSCALE      1024
+#define BATRESISTORCOMP    1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
 #endif
