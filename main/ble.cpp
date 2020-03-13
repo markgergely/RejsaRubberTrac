@@ -14,26 +14,26 @@ BLDevice::BLDevice() { // We initialize a couple things in constructor
 #endif
 }
 
-void BLDevice::setupDevice(char bleName[], uint8_t wheelPosCode) {
+void BLDevice::setupDevice(char bleName[]) {
   uint8_t macaddr[6];
-  parseBLEname(wheelPosCode, bleName);
+
 #if BOARD == BOARD_NRF52
   Bluefruit.autoConnLed(false); // DISABLE BLUE BLINK ON CONNECT STATUS
   Bluefruit.begin(); 
   Bluefruit.getAddr(macaddr);
   sprintf(bleName, "%s%02x%02x%02x\0",bleName, macaddr[2], macaddr[1], macaddr[0]); // Extend bleName[] with the last 4 octets of the mac address
   Bluefruit.setName(bleName);
+  Serial.print("Starting bluetooth with MAC address ");
+//  Serial.printBufferReverse(macaddr, 6, ':');
+  Serial.println();
 #elif BOARD == BOARD_ESP32
   BLEDevice::init(bleName);
   mainServer = BLEDevice::createServer();
 #endif
-  Serial.print("Starting bluetooth with MAC address ");
-//  Serial.printBufferReverse(macaddr, 6, ':');
-  Serial.println();
   Serial.printf("Device name: %s\n", bleName);
 
   setupMainService();
-  startAdvertising(); 
+  startAdvertising();
 }
 
 void BLDevice::setupMainService(void) {
@@ -85,20 +85,6 @@ void BLDevice::startAdvertising(void) {
   mainAdvertising->setMinPreferred(0x0);
   BLEDevice::startAdvertising();
 #endif
-}
-
-void BLDevice::parseBLEname(uint8_t wheelPos, char *blename) {
-  switch (wheelPos) {
-    case 0: sprintf(blename, "RejsaRubberFL"); break;
-    case 1: sprintf(blename, "RejsaRubberFR"); break;
-    case 2: sprintf(blename, "RejsaRubberRL"); break;
-    case 3: sprintf(blename, "RejsaRubberRR"); break;
-    case 4: sprintf(blename, "RejsaRubberF "); break;
-    case 5: sprintf(blename, "RejsaRubberF "); break;
-    case 6: sprintf(blename, "RejsaRubberR "); break;
-    case 7: sprintf(blename, "RejsaRubber"); break;
-    default: sprintf(blename, "Name Error "); break;
-  }
 }
 
 void BLDevice::renderPacketTemperature(int16_t measurements[], uint8_t mirrorTire, one_t &FirstPacket, two_t &SecondPacket, thr_t &ThirdPacket) {
