@@ -65,12 +65,10 @@
 
 // -- Board-specific settings
 
-#if BOARD == BOARD_ESP32
+#if BOARD == BOARD_LOLIND32
   #define MILLIVOLTFULLSCALE  3300
   #define STEPSFULLSCALE      4096
   #define BATRESISTORCOMP    2.100 // Compensation for a resistor voltage divider between battery and ADC input pin
-// PIN Assignments 
-// LOLIN D32/D32 Pro
   #define VBAT_PIN            A13
   #define GPIOLEDDIST         -1 // ESP32 only has one LED, we prefer temp updates to be signalled
   #define GPIOLEDTEMP         LED_BUILTIN  // note: system constant LED_BUILTIN does not seem to work for some of the ESP32 boards => set pin statically here in case
@@ -86,12 +84,27 @@
   #define GPIOMIRR2           26  // GPIO pin: Mirr B
   #define GPIOUNUSEDA2        19  // GPIO pin: Unused A2
   #define GPIOUNUSEDB1        25  // GPIO pin: Unused B1
+#elif BOARD == BOARD_ESP32
+  #define VBAT_PIN            A13
+  #define MILLIVOLTFULLSCALE  3300
+  #define STEPSFULLSCALE      4096
+  #define BATRESISTORCOMP    2.100 // Compensation for a resistor voltage divider between battery and ADC input pin
+  #define GPIOSDA             SDA // set I2C bus GPIO pins to default pins
+  #define GPIOSCL             SCL
+  #define GPIOSDA2            -1 // second I2C bus only available for ESP32
+  #define GPIOSCL2            -1
+  #define GPIOLEDDIST         -1
+  #define GPIOLEDTEMP         -1
+  #define GPIODISTSENSORXSHUT 12  // GPIO pin number
+  #define GPIOCAR             28  // GPIO pin number
+  #define GPIOFRONT           29  // GPIO pin number
+  #define GPIOLEFT            13  // GPIO pin number
+  #define GPIOMIRR            14  // GPIO pin number
 #elif BOARD == BOARD_NRF52
   #define VBAT_PIN              A7
   #define MILLIVOLTFULLSCALE  3600
   #define STEPSFULLSCALE      1024
   #define BATRESISTORCOMP    1.403 // Compensation for a resistor voltage divider between battery and ADC input pin
-// PIN Assignments 
   #define GPIOSDA             SDA // set I2C bus GPIO pins to default pins
   #define GPIOSCL             SCL
   #define GPIOSDA2            -1 // second I2C bus only available for ESP32

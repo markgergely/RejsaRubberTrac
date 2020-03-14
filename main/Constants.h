@@ -14,6 +14,7 @@
 // Boards
 #define BOARD_NRF52 0
 #define BOARD_ESP32 1
+#define BOARD_LOLIND32 2
 
 // Column aggregation algo identifiers
 #define COLUMN_AGGREGATE_MAX 0

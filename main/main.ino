@@ -60,7 +60,7 @@ void setup(){
 #endif
 
 
-#if BOARD == BOARD_ESP32
+#if BOARD == BOARD_ESP32 || BOARD == BOARD_LOLIND32
   analogReadResolution(12); //12 bits
   analogSetAttenuation(ADC_11db);  //For all pins
 #endif
@@ -72,7 +72,7 @@ void setup(){
   pinMode(GPIOFRONT, INPUT_PULLUP);
   pinMode(GPIOCAR, INPUT_PULLUP);
   pinMode(GPIOMIRR, INPUT_PULLUP);
-#if BOARD == BOARD_ESP32
+#if BOARD == BOARD_LOLIND32
   pinMode(GPIOMIRR2, INPUT_PULLUP);
   pinMode(GPIOUNUSEDA2, INPUT);
   pinMode(GPIOUNUSEDA2, INPUT);
