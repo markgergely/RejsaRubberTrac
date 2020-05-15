@@ -61,8 +61,6 @@ private:
 	byte refreshRate; //Set this value to your desired refresh frequency
 
 	float temperatures[64]; //Contains the calculated temperatures of each pixel in the array
-	float Tambient; //Tracks the changing ambient temperature of the sensor
-
 
 	byte loopCount = 0; //Used in main loop
 
@@ -83,16 +81,18 @@ private:
 	boolean checkConfig();
 	float v_ir_off_comp, ksta, v_ir_tgc_comp, v_ir_comp, alpha_comp;
 	float tak4, resolution_comp;
+	float Tambient;
 	int16_t a_common, a_i_scale, b_i_scale, k_t1_scale, k_t2_scale, resolution;
 	uint8_t eepromData[256]; //Contains the full EEPROM reading from the MLX90621
-	float k_t1, k_t2, emissivity, tgc, alpha_cp, a_cp, b_cp, v_th;
+	float k_t1, k_t2, tgc, alpha_cp, a_cp, b_cp, v_th;
 	uint16_t ptat;
 	int16_t cpix;
 	float a_ij, b_ij, alpha_ij;
 	float minTemp, maxTemp;
-  TwoWire *i2c;
+	TwoWire *i2c;
 public:
 	int16_t irData[64]; //Contains the raw IR data from the sensor
+	float emissivity; //Tracks the changing ambient temperature of the sensor and emissivity
 	void initialise(int refrate, TwoWire *thisI2c = &Wire);
 	void measure(bool);
 	float getTemperature(int num);

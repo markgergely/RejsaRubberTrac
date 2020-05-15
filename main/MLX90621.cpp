@@ -119,7 +119,6 @@ void MLX90621::calculateTA(void) {
 
 void MLX90621::preCalculateConstants() {
 	resolution_comp = pow(2.0, (3 - resolution));
-	emissivity = unsigned_16(eepromData[CAL_EMIS_H], eepromData[CAL_EMIS_L]) / 32768.0;
 	a_common = twos_16(eepromData[CAL_ACOMMON_H], eepromData[CAL_ACOMMON_L]);
 	a_i_scale = (int16_t)(eepromData[CAL_AI_SCALE] & 0xF0) >> 4;
 	b_i_scale = (int16_t) eepromData[CAL_BI_SCALE] & 0x0F;

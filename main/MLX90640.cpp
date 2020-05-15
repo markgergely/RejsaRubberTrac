@@ -54,9 +54,12 @@ void MLX90640::measure(bool) {
   //Vdd = MLX90640_GetVdd(mlx90640Frame, &mlx90640);
   //int subpage = MLX90640_GetSubPageNumber(mlx90640Frame);
   Tambient = MLX90640_GetTa(mlx90640Frame, &mlx90640);
-  float tr = Tambient - TA_SHIFT; //Reflected temperature based on the sensor ambient temperature
-  float emissivity = 1;
+  float tr = Tambient; //Reflected temperature based on the sensor ambient temperature
   MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, temperatures);
+}
+
+float MLX90640::getAmbient(void) {
+  return Tambient;
 }
 
 float MLX90640::getTemperature(int num) {

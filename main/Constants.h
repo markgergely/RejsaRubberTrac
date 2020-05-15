@@ -1,15 +1,11 @@
 // FIS identifiers
-#define FIS_MLX90621 0
+#define FIS_DUMMY    0
 #define FIS_MLX90640 1
-#define FIS_DUMMY    2
+#define FIS_MLX90621 2
 
 // Distance sensor identifiers
-#define DIST_VL53L0X 0
-#define DIST_NONE    1
-
-// Display device
-#define DISP_128X32 0
-#define DISP_NONE   1
+#define DIST_NONE    0
+#define DIST_VL53L0X 1
 
 // Boards
 #define BOARD_NRF52 0

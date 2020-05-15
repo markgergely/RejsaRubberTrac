@@ -1,4 +1,8 @@
+#include <Arduino.h>
 #include "Constants.h"
+
+#ifndef RRTCONFIGURATION_H
+#define RRTCONFIGURATION_H
 
 #define _DEBUG                    // Set debug mode, results in more verbose output on serial port
 //#define DUMMYDATA       // Uncomment to enable transmission of fake random data for testing with no sensors needed
@@ -6,7 +10,6 @@
 
 // -- Basic device configuration, see Constants.h
 #define BOARD              BOARD_ESP32
-#define DISP_DEVICE        DISP_NONE
 
 // -- Distance Sensor related settings
 
@@ -26,17 +29,17 @@
 #endif
 #define FIS_REFRESHRATE    16            // Sets the FIS refresh rate in Hz, MLX90640 should be 4 with nRF52, MLX90621 works at 16Hz
 
-#define IGNORE_TOP_ROWS    10     // Ignore this many rows from the top of the sensor
-#define IGNORE_BOTTOM_ROWS 10     // Ignore this many rows from the bottom of the sensor
+#define IGNORE_TOP_ROWS    0     // Ignore this many rows from the top of the sensor
+#define IGNORE_BOTTOM_ROWS 0     // Ignore this many rows from the bottom of the sensor
 
 #define COLUMN_AGGREGATE   COLUMN_AGGREGATE_MAX // Set column aggregation algorhytm, see Constants.h
 
-#define FIS_AUTORANGING          // Comment to disable autoranging
+#define FIS_AUTORANGING 0          // Comment to disable autoranging
 #define AUTORANGING_MINIMUM_TIRE_WIDTH 16 // Minimum tire width for autoranging
 
-#define TEMPSCALING        1.00  // Default = 1.00
+#define TEMPSCALING        1000  // Default =  (1000/1000) = 1.00
 #define TEMPOFFSET         0     // Default = 0      NOTE: in TENTHS of degrees Celsius --> TEMPOFFSET 10 --> 1 degree
-                  
+#define EMISSIVITY        95     // Emissivity for FIS 95/100=0.95
 #define MIRRORTIRE        0      // 0 = default
                                  // 1 = Mirror the tire (A), making the outside edge temps the inside edge temps
 #if FIS_SENSOR2_PRESENT == 1
@@ -88,7 +91,7 @@
   #define VBAT_PIN            A13
   #define MILLIVOLTFULLSCALE  3300
   #define STEPSFULLSCALE      4096
-  #define BATRESISTORCOMP    2.100 // Compensation for a resistor voltage divider between battery and ADC input pin
+  #define BATRESISTORCOMP    2.000 // Compensation for a resistor voltage divider between battery and ADC input pin
   #define GPIOSDA             SDA // set I2C bus GPIO pins to default pins
   #define GPIOSCL             SCL
   #define GPIOSDA2            -1 // second I2C bus only available for ESP32
@@ -133,3 +136,5 @@
 #endif
 
 #define EFFECTIVE_ROWS ( FIS_Y - IGNORE_TOP_ROWS - IGNORE_BOTTOM_ROWS )
+
+#endif
